@@ -12,31 +12,44 @@
  */
 
 
+type error_response = {
+	status: boolean,
+	message: string
+}
+
 export default {
+	//@ts-ignore
 	async fetch(request: Request): Promise<Response> {
-		const error_data = {
-			"status": "error"
+		const error_data: error_response = {
+			status: false,
+			message: "Invalid request"
 		}
 		const redirectMap = new Map([
 			["dotfiles", "https://github.com/atolycs/dotfiles"],
 			["setup", "https://github.com/atolycs/setup-tools"]
 		])
 
+		const os_list = new Map([
+			["linux", "linux/install.bash"],
+			["win", "win/install.ps1"]
+		])
+
 		const subRedirect = request.url.split(".")[0].replace("https://", "")
-		const url = new URL(request.url)
-		let _os
+		const parsed_os = os_list.get(request.url.replace("https://", "").split("/")[1]);
 
-		const searchParams = url.searchParams;
-		for ( const [key, value] of searchParams) {
-			_os = value
+		console.log(parsed_os)
+
+		let location
+
+		if (parsed_os != undefined ) {
+			location = redirectMap.get(subRedirect) + `/raw/main/${parsed_os}`
+		} else {
+			return Response.json(error_data, { status: 503 })
 		}
-
-		const location = redirectMap.get(subRedirect) + `/raw/${_os}/install.bash`
 
 		if (location) {
 			return Response.redirect(location, 301);
 		}
 
-		return Response.json(error_data)
 	},
 } satisfies ExportedHandler;
