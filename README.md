@@ -2,7 +2,7 @@
 
 Referenced code: https://developers.cloudflare.com/workers/examples/bulk-redirects/
 
-Redirect subdomains set in redirecMap o any location of your choice.
+Redirect subdomains set in redirectMap to any location of your choice.
 
 ```
 		const redirectMap = new Map([
