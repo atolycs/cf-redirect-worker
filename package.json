@@ -1,6 +1,6 @@
 {
-  "name": "reverseproxy-on-worker",
-  "version": "0.0.0",
+  "name": "cf-redirtect-worker",
+  "version": "0.0.7",
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",

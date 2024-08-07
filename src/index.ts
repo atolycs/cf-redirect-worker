@@ -41,8 +41,10 @@ export default {
 
 		let location
 
-		if (parsed_os != undefined ) {
+		if (parsed_os != undefined) {
 			location = redirectMap.get(subRedirect) + `/raw/main/${parsed_os}`
+		} else if (subRedirect === "dotfiles") {
+			location = redirectMap.get(subRedirect)
 		} else {
 			return Response.json(error_data, { status: 503 })
 		}
