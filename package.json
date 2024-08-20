@@ -10,7 +10,7 @@
     "cf-typegen": "wrangler types",
     "format": "biome format . --fix",
     "prepare": "husky",
-		"lintstaged": "lint-staged"
+    "lintstaged": "lint-staged"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",

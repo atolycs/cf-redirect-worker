@@ -11,55 +11,53 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-
 type error_response = {
-	status: boolean,
-	message: string
-}
+  status: boolean;
+  message: string;
+};
 
 export default {
-	//@ts-ignore
-	async fetch(request: Request): Promise<Response> {
-		const error_data: error_response = {
-			status: false,
-			message: "Invalid request"
-		}
-		const redirectMap = new Map([
-			["dotfiles", "https://github.com/atolycs/dotfiles"],
-			["setup", "https://github.com/atolycs/setup-tools"]
-		])
+  //@ts-ignore
+  async fetch(request: Request): Promise<Response> {
+    const error_data: error_response = {
+      status: false,
+      message: "Invalid request",
+    };
+    const redirectMap = new Map([
+      ["dotfiles", "https://github.com/atolycs/dotfiles"],
+      ["setup", "https://github.com/atolycs/setup-tools"],
+    ]);
 
-		const os_list = new Map([
-			["linux", "linux/install.bash"],
-			["win", "win/install.ps1"]
-		])
+    const os_list = new Map([
+      ["linux", "linux/install.bash"],
+      ["win", "win/install.ps1"],
+    ]);
 
-		const query_get = new Map([
-			["extra", "addtional_install.ps1"]
-		])
-		const subRedirect = request.url.split(".")[0].replace("https://", "")
-		const parsed_os = os_list.get(request.url.replace("https://", "").split("/")[1]);
-		const parsed_query = query_get.get(
-			new URL(request.url).searchParams.get("p")?.toString().toLowerCase()
-		)
+    const query_get = new Map([["extra", "addtional_install.ps1"]]);
+    const subRedirect = request.url.split(".")[0].replace("https://", "");
+    const parsed_os = os_list.get(
+      request.url.replace("https://", "").split("/")[1],
+    );
+    const parsed_query = query_get.get(
+      new URL(request.url).searchParams.get("p")?.toString().toLowerCase(),
+    );
 
-		console.log(parsed_os)
+    console.log(parsed_os);
 
-		let location
+    let location;
 
-		if (parsed_os != undefined) {
-			location = redirectMap.get(subRedirect) + `/raw/main/${parsed_os}`
-		} else if (parsed_query != undefined) {
-			location = redirectMap.get(subRedirect) + `/raw/main/win/${parsed_query}`
-		} else if (subRedirect === "dotfiles") {
-			location = redirectMap.get(subRedirect)
-		} else {
-			return Response.json(error_data, { status: 503 })
-		}
+    if (parsed_os != undefined) {
+      location = redirectMap.get(subRedirect) + `/raw/main/${parsed_os}`;
+    } else if (parsed_query != undefined) {
+      location = redirectMap.get(subRedirect) + `/raw/main/win/${parsed_query}`;
+    } else if (subRedirect === "dotfiles") {
+      location = redirectMap.get(subRedirect);
+    } else {
+      return Response.json(error_data, { status: 503 });
+    }
 
-		if (location) {
-			return Response.redirect(location, 301);
-		}
-
-	},
+    if (location) {
+      return Response.redirect(location, 301);
+    }
+  },
 } satisfies ExportedHandler;
