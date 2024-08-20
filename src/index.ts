@@ -34,8 +34,14 @@ export default {
 			["win", "win/install.ps1"]
 		])
 
+		const query_get = new Map([
+			["extra", "addtional_install.ps1"]
+		])
 		const subRedirect = request.url.split(".")[0].replace("https://", "")
 		const parsed_os = os_list.get(request.url.replace("https://", "").split("/")[1]);
+		const parsed_query = query_get.get(
+			new URL(request.url).searchParams.get("p")?.toString().toLowerCase()
+		)
 
 		console.log(parsed_os)
 
@@ -43,6 +49,8 @@ export default {
 
 		if (parsed_os != undefined) {
 			location = redirectMap.get(subRedirect) + `/raw/main/${parsed_os}`
+		} else if (parsed_query != undefined) {
+			location = redirectMap.get(subRedirect) + `/raw/main/win/${parsed_query}`
 		} else if (subRedirect === "dotfiles") {
 			location = redirectMap.get(subRedirect)
 		} else {
